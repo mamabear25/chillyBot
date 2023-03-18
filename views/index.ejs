@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ChillyBot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="view.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            background-image: url();
+
+        }
+      
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    
+        .bot-message {
+          clear: both;
+            align-self: flex-start;
+            background-color: #f2f2f2;
+            padding: 1rem;
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            margin-right: 2rem;
+        }
+                
+        .user-message {
+          clear: both;
+            align-self: flex-end;
+            background-color: #39658b;
+            width: fit-content;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            margin-right: 2rem;
+            color: #fff;
+            float: right;
+        }
+    
+        /* Add comment-like background to messages */
+        .bot-message::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 0 8px 10px;
+            border-color: transparent transparent transparent #f2f2f2;
+        }
+    
+        .user-message::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -10px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 10px 8px 0;
+            border-color: transparent #39658b transparent transparent;
+        }
+
+        .chatbox {
+            padding: 1rem;
+            width: 375px;
+            height: 667px;
+            border-radius: 20px;
+            background-color: #fff;
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }  
+    </style>
+    
+</head>
+  <body class="bg-gray-400">
+    <div class="h-screen flex flex-col justify-center items-center">
+      <div class="w-11/12 h-4/5 max-w-sm rounded-lg shadow-md overflow-hidden">
+        <div class="bg-gray-900 h-full ">
+          <h1 class="text-center text-xl font-bold py-4 bg-gray-700 text-white heading">Chilly Bot</h1>
+          <div id="chatbox" class="p-4 h-4/5 overflow-y-auto"></div>
+          <form id="message-form" class="bg-gray-200 px-4 py-2 flex items-center">
+            <input type="text" id="message-input" placeholder="Type your message here..." class="flex-grow border-2 border-gray-400 rounded-lg px-4 py-2 mr-2">
+            <input type="submit" value="Send" class="bg-green-500 text-white rounded-lg px-4 py-2 cursor-pointer">
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      const chatbox = document.getElementById('chatbox');
+      const form = document.getElementById('message-form');
+      const input = document.getElementById('message-input');
+      const ws = new WebSocket('ws://localhost:3320');
+
+      // Handle incoming messages from the server
+      ws.onmessage = (event) => {
+      const message = document.createElement('p');
+      const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+      if (event.data.startsWith('BOT: ')) {
+        message.classList.add('bot-message');
+        message.innerHTML = `<span class="timestamp">${timestamp}</span>${event.data}`;
+      } else {
+        message.classList.add('user-message');
+        message.innerHTML = `<span class="timestamp">${timestamp}</span>${event.data}`;
+      }
+      chatbox.appendChild(message);
+      };
+
+      // Handle form submissions
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const message = input.value.trim();
+        if (message !== '') {
+
+          // Create new message element for user input
+          const userMessage = document.createElement('p');
+          userMessage.innerText = 'Me: ' + message;
+          userMessage.classList.add('user-message');
+          chatbox.appendChild(userMessage);
+
+          const request = new XMLHttpRequest();
+          request.open('POST', '/message');
+          request.setRequestHeader('Content-Type', 'application/json');
+          request.onload = () => {
+            input.value = '';
+          };
+          request.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              // Create new message element for bot response
+              const botMessage = document.createElement('p');
+              botMessage.innerText = 'BOT: ' + JSON.parse(this.responseText).message;
+              botMessage.classList.add('bot-message');
+              chatbox.appendChild(botMessage);
+          }
+          };
+          request.send(JSON.stringify({ message }));
+      }
+      });
+    </script>
+  </body>
+</html>

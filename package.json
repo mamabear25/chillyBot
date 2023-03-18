@@ -1,0 +1,28 @@
+{
+  "name": "chillybot",
+  "version": "1.0.0",
+  "description": "chatbot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mamabear25/chillyBot.git"
+  },
+  "keywords": [
+    "bot"
+  ],
+  "author": "Silver Okonkwo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mamabear25/chillyBot/issues"
+  },
+  "homepage": "https://github.com/mamabear25/chillyBot#readme",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "ws": "^8.13.0"
+  }
+}
