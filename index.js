@@ -1,6 +1,8 @@
 const express = require('express');
 const WebSocket = require('ws');
 const session = require('express-session');
+require("dotenv").config();
+const port = process.env.PORT || 3040;
 
 const app = express();
 app.use(express.json());
@@ -13,10 +15,11 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: { secure: true }
-  }));  
+}));  
 
-const server = app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+
+const server = app.listen(process.env.PORT, () => {
+  console.log(`Server listening on port ${process.env.PORT}`);
 });
 
 const wss = new WebSocket.Server({ server });
