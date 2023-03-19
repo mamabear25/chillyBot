@@ -16,6 +16,12 @@
             outline: none;
             box-shadow: none;
         }
+
+        .welcome-message{
+          background-color: #fff;
+          padding: 6px;
+          border-radius: 10px;
+        }
     
         .bot-message {
           clear: both;
@@ -35,6 +41,7 @@
             padding: 0.5rem;
             border-radius: 4px;
             margin-bottom: 1rem;
+            margin-top: 10px;
             margin-right: 2rem;
             color: #fff;
             float: right;
@@ -87,8 +94,12 @@
       <div class="w-11/12 h-4/5 max-w-sm rounded-lg shadow-md overflow-hidden">
         <div class="bg-gray-900 h-full ">
           <h1 class="text-center text-xl font-bold py-4 bg-gray-700 text-white heading">Chilly Bot</h1>
-          <div id="chatbox" class="p-4 h-4/5 overflow-y-auto"></div>
-          <form id="message-form" class="bg-gray-200 px-4 py-2 flex items-center">
+          <div id="chatbox" class="p-4 h-4/6 overflow-y-auto">
+            <% if (message) { %>
+              <p class="welcome-message"><%= message %></p>
+            <% } %>
+          </div>
+          <form id="message-form" class="bg-gray-200 px-4 py-6 flex items-center">
             <input type="text" id="message-input" placeholder="Type your message here..." class="flex-grow border-2 border-gray-400 rounded-lg px-4 py-2 mr-2">
             <input type="submit" value="Send" class="bg-green-500 text-white rounded-lg px-4 py-2 cursor-pointer">
           </form>
@@ -105,7 +116,7 @@
       ws.onmessage = (event) => {
       const message = document.createElement('p');
       const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
-      if (event.data.startsWith('BOT: ')) {
+      if (event.data.startsWith('chillyBot: ')) {
         message.classList.add('bot-message');
         message.innerHTML = `<span class="timestamp">${timestamp}</span>${event.data}`;
       } else {
@@ -113,6 +124,8 @@
         message.innerHTML = `<span class="timestamp">${timestamp}</span>${event.data}`;
       }
       chatbox.appendChild(message);
+      chatbox.scrollTop = chatbox.scrollHeight; // scroll to bottom
+
       };
 
       // Handle form submissions
@@ -137,7 +150,7 @@
           if (this.readyState == 4 && this.status == 200) {
               // Create new message element for bot response
               const botMessage = document.createElement('p');
-              botMessage.innerText = 'BOT: ' + JSON.parse(this.responseText).message;
+              botMessage.innerText = 'chillyBot: ' + JSON.parse(this.responseText).message;
               botMessage.classList.add('bot-message');
               chatbox.appendChild(botMessage);
           }
