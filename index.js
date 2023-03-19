@@ -25,7 +25,7 @@ app.use(session({
 
 // Configure session middleware with MongoStore
 app.use(session({
-    secret: 'my-secret-key',
+    secret: process.env.MY_SWEETSECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true },
