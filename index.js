@@ -94,7 +94,7 @@ app.use((req, res, next) => {
     });
 });
 
-const greeting = ["hello there, i'm chillyBot,", "Hi dev, How can I assist you today?", "Ola! como t'e yamo", "Egbon mi!"]
+const greeting = ["hello there, i'm chillyBot", "Hi dev, How can I assist you today?", "Ola! como t'e yamo", "Egbon mi!"]
 
 app.get('/', (req, res) => {
     const randomIndex = Math.floor(Math.random() * greeting.length);

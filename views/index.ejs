@@ -99,7 +99,7 @@
               <p class="welcome-message"><%= message %></p>
             <% } %>
           </div>
-          <form id="message-form" class="bg-gray-200 px-4 py-6 flex items-center">
+          <form id="message-form" class="bg-gray-200 px-4 py-6 flex items-center mt-10">
             <input type="text" id="message-input" placeholder="Type your message here..." class="flex-grow border-2 border-gray-400 rounded-lg px-4 py-2 mr-2">
             <input type="submit" value="Send" class="bg-green-500 text-white rounded-lg px-4 py-2 cursor-pointer">
           </form>
@@ -153,6 +153,8 @@
               botMessage.innerText = 'chillyBot: ' + JSON.parse(this.responseText).message;
               botMessage.classList.add('bot-message');
               chatbox.appendChild(botMessage);
+              chatbox.scrollTop = chatbox.scrollHeight; // scroll to bottom
+
           }
           };
           request.send(JSON.stringify({ message }));
